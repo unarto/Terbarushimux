@@ -32,12 +32,10 @@ class TerminalViewHolder(private val binding: HomeTerminalBinding, private val r
 
     override fun onBind() {
         val context = itemView.context
+        root.isEnabled = true
         if (!data.isRunning) {
-            root.isEnabled = false
-            summary.text =
-                context.getString(R.string.home_status_service_not_running, context.getString(R.string.app_name))
+            summary.text = "Shimux tidak aktif (Ketuk untuk membuka terminal lokal)"
         } else {
-            root.isEnabled = true
             summary.text = context.getString(R.string.home_terminal_description)
         }
     }
