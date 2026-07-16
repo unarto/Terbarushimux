@@ -1,0 +1,6 @@
+{
+  "name": "Shimux",
+  "description": "Jampang File Manager & Text Editor with integrated Termux capabilities",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

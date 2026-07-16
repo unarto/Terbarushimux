@@ -1,0 +1,51 @@
+plugins {
+    id("idea")
+}
+
+idea.module {
+    excludeDirs += file('out')
+}
+
+subprojects {
+    plugins.withId("com.android.base") {
+        android {
+            compileSdk = 36
+            buildToolsVersion = "36.0.0"
+            ndkVersion = "29.0.13113456"
+            defaultConfig {
+                minSdk = 24
+                targetSdk = 36
+            }
+            compileOptions {
+                sourceCompatibility = JavaVersion.VERSION_21
+                targetCompatibility = JavaVersion.VERSION_21
+            }
+        }
+    }
+}
+
+apply from: 'api/manifest.gradle'
+def gitCommitId = "custom"
+try {
+    def p = 'git rev-parse --short HEAD'.execute([], project.rootDir)
+    p.waitFor()
+    if (p.exitValue() == 0) {
+        def text = p.text.trim()
+        if (text) gitCommitId = text
+    }
+} catch (Exception e) {}
+
+def gitCommitCount = 1000
+try {
+    def p = 'git rev-list --count HEAD'.execute([], project.rootDir)
+    p.waitFor()
+    if (p.exitValue() == 0) {
+        def text = p.text.trim()
+        if (text) gitCommitCount = Integer.parseInt(text)
+    }
+} catch (Exception e) {}
+def baseVersionName = "${api_version_major}.6.0"
+ext {
+    versionCode = gitCommitCount
+    versionName = "${baseVersionName}.r${gitCommitCount}.${gitCommitId}"
+}
