@@ -31,13 +31,8 @@ class FileManagerViewHolder(private val binding: HomeTerminalBinding, private va
     }
 
     override fun onBind() {
-        val status = data
-        root.isEnabled = status.isRunning
-        if (status.isRunning) {
-            root.alpha = 1f
-        } else {
-            root.alpha = 0.5f
-        }
+        root.isEnabled = true
+        root.alpha = 1f
     }
 
     override fun onClick(v: View) {
