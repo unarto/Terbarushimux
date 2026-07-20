@@ -2,8 +2,12 @@ name: App
 
 on:
   push:
+    branches:
+      - main
+      - master
     paths-ignore:
-      - '.github/ISSUE_TEMPLATE'
+      - '.github/ISSUE_TEMPLATE/**'
+  workflow_dispatch:
 
 jobs:
   build:
@@ -15,11 +19,13 @@ jobs:
         with:
           submodules: 'recursive'
           fetch-depth: 0
+
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '21'
+
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
@@ -28,17 +34,24 @@ jobs:
           build-scan-publish: true
           build-scan-terms-of-use-url: "https://gradle.com/terms-of-service"
           build-scan-terms-of-use-agree: "yes"
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'npm'
-          cache-dependency-path: 'manager/src/main/assets/editor/package-lock.json'
+
       - name: Install Node dependencies
         run: |
-          npm install
-          cd manager/src/main/assets/editor
-          npm install
+          if [ -f "package.json" ]; then
+            npm install
+          fi
+          if [ -d "manager/src/main/assets/editor" ]; then
+            cd manager/src/main/assets/editor
+            if [ -f "package.json" ]; then
+              npm install
+            fi
+          fi
+
       - name: Build with Gradle
         id: buildWithGradle
         run: |
@@ -49,11 +62,15 @@ jobs:
           echo 'org.gradle.parallel=true' >> gradle.properties
           chmod +x gradlew
           ./gradlew :manager:assemble
-          releaseName=`ls manager/build/outputs/apk/release/shizuku*-v*-release.apk | awk -F '(/|-release.apk)' '{print $6}'` && echo "releaseName=$releaseName" >> $GITHUB_OUTPUT
+          
+          # Ambil nama release APK jika ada, jika tidak gunakan nama bawaan
+          APK_NAME=$(ls manager/build/outputs/apk/release/shizuku*-v*-release.apk 2>/dev/null | awk -F '(/|-release.apk)' '{print $6}' || echo "app-release")
+          echo "releaseName=$APK_NAME" >> $GITHUB_OUTPUT
+
       - name: Upload release
         if: success()
         uses: actions/upload-artifact@v4
         with:
           name: ${{ steps.buildWithGradle.outputs.releaseName }}
-          path: "manager/build/outputs"
+          path: "manager/build/outputs/apk"
           compression-level: 9
