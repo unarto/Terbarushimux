@@ -17,11 +17,6 @@ android {
         versionCode rootProject.ext.versionCode
         versionName rootProject.ext.versionName
         multiDexEnabled true
-        externalNativeBuild {
-            cmake {
-                arguments '-DANDROID_STL=none'
-            }
-        }
     }
     buildFeatures {
         buildConfig true
@@ -44,12 +39,6 @@ android {
             shrinkResources true
             vcsInfo.include false
             proguardFiles 'proguard-rules.pro'
-        }
-    }
-    externalNativeBuild {
-        cmake {
-            path 'src/main/jni/CMakeLists.txt'
-            version = "3.31.0+"
         }
     }
     kotlinOptions {
