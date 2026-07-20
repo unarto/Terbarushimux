@@ -182,8 +182,7 @@ dependencies {
     implementation project(':api')
     implementation project(':provider')
 
-    // Modul Termux Lengkap
-    implementation project(':termux-app')
+    // Submodul Termux (Tanpa termux-app)
     implementation project(':terminal-emulator')
     implementation project(':terminal-view')
     implementation project(':termux-shared')
