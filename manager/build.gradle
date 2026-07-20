@@ -148,9 +148,13 @@ android.applicationVariants.configureEach { variant ->
 tasks.withType(CompileArtProfileTask.class).configureEach {
     enabled = false
 }
-configurations.configureEach {
-    exclude group: 'androidx.appcompat', module: 'appcompat'
-    exclude group: 'androidx.profileinstaller', module: 'profileinstaller'
+
+configurations {
+    all {
+        exclude group: 'androidx.appcompat', module: 'appcompat'
+        exclude group: 'androidx.profileinstaller', module: 'profileinstaller'
+        exclude group: 'com.google.guava', module: 'listenablefuture'
+    }
 }
 
 dependencies {
