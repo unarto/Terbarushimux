@@ -11,7 +11,6 @@ plugins {
 
 android {
     namespace 'moe.shizuku.manager'
-    
     defaultConfig {
         applicationId "moe.shizuku.privileged.api"
         versionCode rootProject.ext.versionCode
@@ -22,28 +21,14 @@ android {
             }
         }
     }
-
-    compileOptions {
-        coreLibraryDesugaringEnabled true
-        sourceCompatibility JavaVersion.VERSION_21
-        targetCompatibility JavaVersion.VERSION_21
-    }
-
     buildFeatures {
         buildConfig true
         viewBinding true
         prefab true
-        compose true
     }
-
-    composeOptions {
-        kotlinCompilerExtensionVersion '1.5.14'
-    }
-
     signingConfigs {
         sign
     }
-
     buildTypes {
         debug {
             signingConfig signingConfigs.sign
@@ -56,18 +41,15 @@ android {
             proguardFiles 'proguard-rules.pro'
         }
     }
-
     externalNativeBuild {
         cmake {
             path 'src/main/jni/CMakeLists.txt'
-            version = "3.22.1+"
+            version = "3.31.0+"
         }
     }
-
     kotlinOptions {
         jvmTarget = "21"
     }
-
     packagingOptions {
         jniLibs {
             useLegacyPackaging true
@@ -76,11 +58,9 @@ android {
             excludes += ['**']
         }
     }
-
     dependenciesInfo {
         includeInApk false
     }
-
     lint {
         checkReleaseBuilds false
     }
@@ -125,15 +105,9 @@ def collapseReleaseResourceNames = task('collapseReleaseResourceNames').doLast {
 }
 
 afterEvaluate {
-    tasks.matching { it.name.contains("Resources") && !it.name.contains("MaterialThemeBuilder") }.configureEach { resTask ->
-        resTask.dependsOn(tasks.matching { it.name.contains("MaterialThemeBuilder") })
-    }
-
-    if (tasks.findByName('optimizeReleaseResources')) {
-        tasks.getByName('optimizeReleaseResources').finalizedBy(collapseReleaseResourceNames)
-    }
-    tasks.findByName('preReleaseBuild')?.dependsOn(':shell:assembleRelease')
-    tasks.findByName('preDebugBuild')?.dependsOn(':shell:assembleDebug')
+    tasks.getByName('optimizeReleaseResources').finalizedBy(collapseReleaseResourceNames)
+    tasks.getByName('preReleaseBuild').dependsOn(':shell:assembleRelease')
+    tasks.getByName('preDebugBuild').dependsOn(':shell:assembleDebug')
 }
 
 android.applicationVariants.configureEach { variant ->
@@ -163,39 +137,20 @@ android.applicationVariants.configureEach { variant ->
 tasks.withType(CompileArtProfileTask.class).configureEach {
     enabled = false
 }
-
 configurations.configureEach {
     exclude group: 'androidx.appcompat', module: 'appcompat'
     exclude group: 'androidx.profileinstaller', module: 'profileinstaller'
 }
 
 dependencies {
-    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.2'
-
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2'
 
-    // Submodul Project Internal
     implementation project(':server')
     implementation project(':rish')
     implementation project(':starter')
     implementation project(':api')
     implementation project(':provider')
-
-    // Submodul Termux (Tanpa termux-app)
-    implementation project(':terminal-emulator')
-    implementation project(':terminal-view')
-    implementation project(':termux-shared')
-
-    // Jetpack Compose Libraries
-    implementation platform('androidx.compose:compose-bom:2024.09.03')
-    implementation 'androidx.compose.ui:ui'
-    implementation 'androidx.compose.ui:ui-graphics'
-    implementation 'androidx.compose.ui:ui-tooling-preview'
-    implementation 'androidx.compose.material3:material3'
-    implementation 'androidx.activity:activity-compose'
-    implementation 'androidx.lifecycle:lifecycle-runtime-compose'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-compose'
 
     implementation libs.hidden.compat
     compileOnly libs.hidden.stub
