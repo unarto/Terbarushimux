@@ -4,6 +4,7 @@ import com.android.build.gradle.internal.tasks.CompileArtProfileTask
 plugins {
     id('com.android.application')
     id('org.jetbrains.kotlin.android')
+    id('org.jetbrains.kotlin.plugin.compose')
     id('dev.rikka.tools.refine')
     id('dev.rikka.tools.autoresconfig')
     id('dev.rikka.tools.materialthemebuilder')
@@ -24,7 +25,10 @@ android {
     buildFeatures {
         buildConfig true
         viewBinding true
-        prefab true
+        compose true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.15"
     }
     signingConfigs {
         sign
@@ -152,9 +156,24 @@ dependencies {
     implementation project(':starter')
     implementation project(':api')
     implementation project(':provider')
+    implementation project(':terminal-emulator')
+    implementation project(':terminal-view')
 
     implementation libs.hidden.compat
     compileOnly libs.hidden.stub
+
+    // Jetpack Compose
+    implementation 'androidx.compose.ui:ui:1.7.5'
+    implementation 'androidx.compose.material3:material3:1.2.1'
+    implementation 'androidx.compose.runtime:runtime:1.7.5'
+    implementation 'androidx.compose.foundation:foundation:1.7.5'
+    implementation 'androidx.activity:activity-compose:1.9.0'
+    implementation 'androidx.lifecycle:lifecycle-runtime-compose:2.8.6'
+    
+    // Termux dependencies
+    implementation project(':terminal-emulator')
+    implementation project(':terminal-view')
+    implementation project(':termux-shared')
 
     implementation 'androidx.browser:browser:1.8.0'
     implementation 'androidx.core:core-ktx:1.16.0'
