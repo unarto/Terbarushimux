@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.22)
+cmake_minimum_required(VERSION 3.31)
 
 project("shizuku")
 
@@ -22,14 +22,6 @@ find_package(cxx REQUIRED CONFIG)
 
 add_executable(libshizuku.so
         starter.cpp misc.cpp selinux.cpp cgroup.cpp)
-
-add_executable(libtermux-bootstrap.so termux-bootstrap.cpp)
-target_link_libraries(libtermux-bootstrap.so log cxx::cxx)
-if (NOT CMAKE_BUILD_TYPE STREQUAL "Debug")
-    add_custom_command(TARGET libtermux-bootstrap.so POST_BUILD
-            COMMAND ${CMAKE_STRIP} --remove-section=.comment "${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/libtermux-bootstrap.so")
-endif ()
-
 
 target_link_libraries(libshizuku.so log cxx::cxx)
 

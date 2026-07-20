@@ -8,7 +8,7 @@ import moe.shizuku.manager.R
 import moe.shizuku.manager.databinding.HomeItemContainerBinding
 import moe.shizuku.manager.databinding.HomeTerminalBinding
 import moe.shizuku.manager.model.ServiceStatus
-import moe.shizuku.manager.shell.ShellTutorialActivity
+import moe.shizuku.manager.shell.moe.shizuku.manager.terminal.presentation.TerminalActivity
 import rikka.recyclerview.BaseViewHolder
 import rikka.recyclerview.BaseViewHolder.Creator
 
@@ -32,10 +32,12 @@ class TerminalViewHolder(private val binding: HomeTerminalBinding, private val r
 
     override fun onBind() {
         val context = itemView.context
-        root.isEnabled = true
         if (!data.isRunning) {
-            summary.text = "Shimux tidak aktif (Ketuk untuk membuka terminal lokal)"
+            root.isEnabled = false
+            summary.text =
+                context.getString(R.string.home_status_service_not_running, context.getString(R.string.app_name))
         } else {
+            root.isEnabled = true
             summary.text = context.getString(R.string.home_terminal_description)
         }
     }

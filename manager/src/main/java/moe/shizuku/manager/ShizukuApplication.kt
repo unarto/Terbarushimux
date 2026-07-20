@@ -38,24 +38,7 @@ class ShizukuApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         application = this
-        com.tencent.mmkv.MMKV.initialize(this)
         init(this)
-        scheduleTrashCleanup()
     }
 
-    private fun scheduleTrashCleanup() {
-        val constraints = androidx.work.Constraints.Builder()
-            .setRequiresBatteryNotLow(true)
-            .build()
-
-        val cleanupRequest = androidx.work.PeriodicWorkRequestBuilder<moe.shizuku.manager.filemanager.data.TrashCleanupWorker>(1, java.util.concurrent.TimeUnit.DAYS)
-            .setConstraints(constraints)
-            .build()
-
-        androidx.work.WorkManager.getInstance(this).enqueueUniquePeriodicWork(
-            "TrashCleanupWork",
-            androidx.work.ExistingPeriodicWorkPolicy.KEEP,
-            cleanupRequest
-        )
-    }
 }

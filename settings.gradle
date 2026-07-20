@@ -22,10 +22,6 @@ dependencyResolutionManagement {
         mavenCentral()
         maven {
             url("https://jitpack.io")
-            content {
-                includeGroup("com.github.topjohnwu.libsu")
-                includeGroup("com.termux.termux-app")
-            }
         }
     }
     versionCatalogs {
@@ -41,6 +37,8 @@ dependencyResolutionManagement {
         }
     }
 }
+
+rootProject.name = "shimux"
 
 include ':server', ':starter', ':shell'
 include ':manager'
@@ -81,3 +79,10 @@ project(':server-shared').projectDir = file("$root${File.separator}server-shared
 
 include ':hidden-api-stub'
 project(':hidden-api-stub').projectDir = file("$root${File.separator}demo-hidden-api-stub")
+
+include ':terminal-emulator'
+project(':terminal-emulator').projectDir = file("termux-app${File.separator}terminal-emulator")
+include ':terminal-view'
+project(':terminal-view').projectDir = file("termux-app${File.separator}terminal-view")
+include ':termux-shared'
+project(':termux-shared').projectDir = file("termux-app${File.separator}termux-shared")
